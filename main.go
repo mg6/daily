@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"log"
 	"log/slog"
 	"os"
@@ -15,6 +16,9 @@ import (
 type CalObject = davclient.CalendarObject
 
 func main() {
+	tplName := flag.String("tpl", "daily", "Template to use")
+	flag.Parse()
+
 	logger := GetDefaultLogger()
 	slog.SetDefault(logger)
 
@@ -85,12 +89,17 @@ func main() {
 		},
 	}
 
-	tmpl, err := template.New("note").Funcs(funcMap).Parse(settings.Template)
+	src, ok := settings.Templates[*tplName]
+	if !ok {
+		log.Fatalf("Template not found: %v", *tplName)
+	}
+
+	tpl, err := template.New("note").Funcs(funcMap).Parse(src)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	err = tmpl.Execute(os.Stdout, settings.ToDos)
+	err = tpl.Execute(os.Stdout, settings.ToDos)
 	if err != nil {
 		log.Fatal(err)
 	}

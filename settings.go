@@ -15,7 +15,7 @@ type Settings struct {
 	CalDAV CalDAVConfig     `yaml:"caldav"`
 	ToDos  []CalendarConfig `yaml:"todos"`
 
-	Template string `yaml:"template"`
+	Templates map[string]string `yaml:"templates"`
 }
 
 type CalDAVConfig struct {

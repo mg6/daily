@@ -13,16 +13,17 @@ todos:
     description: |
       What's important this month?
 
-template: |
+templates:
+  daily: |
 
-  * * *
-  {{ range . }}
-  ## {{ . | LabelOrName }}
-  {{ .Desc }}
-  {{- range TasksByCal .Name | OnlyTodo | ByMtimeDesc | Top 5 }}
-  - [ ] {{ Summary . -}}
-  {{ end }}
-  {{- range TasksByCal .Name | OnlyCompleted | ByMtimeDesc | Top 2 }}
-  - [x] {{ Summary . -}}
-  {{ end }}
-  {{ end -}}
+    * * *
+    {{ range . }}
+    ## {{ . | LabelOrName }}
+    {{ .Desc }}
+    {{- range TasksByCal .Name | OnlyTodo | ByMtimeDesc | Top 5 }}
+    - [ ] {{ Summary . -}}
+    {{ end }}
+    {{- range TasksByCal .Name | OnlyCompleted | ByMtimeDesc | Top 2 }}
+    - [x] {{ Summary . -}}
+    {{ end }}
+    {{ end -}}
