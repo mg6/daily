@@ -1,0 +1,28 @@
+---
+caldav:
+  url: "https://caldav.fastmail.com/dav/calendars"
+  username: "user@example.com"
+  password: "REPLACE_ME"
+
+todos:
+  - name: DEFAULT_TASK_CALENDAR_NAME
+    label: Tasks
+    description: |
+      What's the next step right now?
+  - name: Goals
+    description: |
+      What's important this month?
+
+template: |
+
+  * * *
+  {{ range . }}
+  ## {{ . | LabelOrName }}
+  {{ .Desc }}
+  {{- range TasksByCal .Name | OnlyTodo | ByMtimeDesc | Top 5 }}
+  - [ ] {{ Summary . -}}
+  {{ end }}
+  {{- range TasksByCal .Name | OnlyCompleted | ByMtimeDesc | Top 2 }}
+  - [x] {{ Summary . -}}
+  {{ end }}
+  {{ end -}}
