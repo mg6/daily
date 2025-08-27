@@ -1,6 +1,6 @@
 # Daily
 
-Generate daily notes from CalDAV tasks and format using templates.
+Generate Markdown formatted note from CalDAV tasks.
 
 ## Features
 
@@ -14,7 +14,8 @@ Generate daily notes from CalDAV tasks and format using templates.
 ## Installation
 
 ```sh
-go install github.com/mg6/daily@latest
+git clone git@github.com:mg6/daily.git
+cd daily && go install .
 ```
 
 ## Configuration
@@ -61,7 +62,7 @@ The following functions are available in templates:
 
 ## Example Output
 
-```
+```md
 * * *
 
 ## Tasks
