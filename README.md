@@ -57,6 +57,7 @@ The following functions are available in templates:
 - `ByCtimeDesc`: Sort by creation time (newest first)
 - `ByMtimeDesc`: Sort by modification time (newest first)
 - `Summary`: Get task summary/title
+- `Completed`: Get task completion time
 
 ## Example Output
 

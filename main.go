@@ -8,6 +8,7 @@ import (
 	"slices"
 	"strings"
 	"text/template"
+	"time"
 
 	"github.com/cyp0633/libcaldora/davclient"
 	"github.com/emersion/go-ical"
@@ -86,6 +87,14 @@ func main() {
 		},
 		"Summary": func(v CalObject) string {
 			return v.Event.Props[ical.PropSummary][0].Value
+		},
+		"Completed": func(v CalObject) string {
+			val := v.Event.Props[ical.PropCompleted][0].Value
+			t, err := time.Parse(DateTimeRFC2445, val)
+			if err != nil {
+				log.Fatal(err)
+			}
+			return t.Local().Format(time.DateOnly)
 		},
 	}
 

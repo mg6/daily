@@ -24,6 +24,6 @@ templates:
     - [ ] {{ Summary . -}}
     {{ end }}
     {{- range TasksByCal .Name | OnlyCompleted | ByMtimeDesc | Top 2 }}
-    - [x] {{ Summary . -}}
+    - [x] {{ Summary . -}} ({{ Completed . }})
     {{ end }}
     {{ end -}}
