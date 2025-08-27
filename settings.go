@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"log"
 	"net/url"
@@ -27,8 +28,8 @@ type CalDAVConfig struct {
 
 type CalendarConfig struct {
 	Name  string `yaml:"name"`
-	Label string `yaml:"label"`
-	Desc  string `yaml:"description"`
+	Label string `yaml:"label,omitempty"`
+	Desc  string `yaml:"description,omitempty"`
 }
 
 func (c *CalendarConfig) GetLabel() string {
@@ -68,11 +69,12 @@ func ReadSettings(filePath string) (*Settings, error) {
 }
 
 func (s *Settings) WriteSettings(filePath string) error {
-	data, err := yaml.Marshal(s)
-	if err != nil {
-		return fmt.Errorf("failed to marshal settings to YAML: %w", err)
-	}
+	buf := bytes.Buffer{}
+	enc := yaml.NewEncoder(&buf)
+	enc.SetIndent(2)
+	enc.Encode(s)
 
+	data := buf.Bytes()
 	if err := os.WriteFile(filePath, data, 0644); err != nil {
 		return fmt.Errorf("failed to write settings file: %w", err)
 	}

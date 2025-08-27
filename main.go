@@ -16,10 +16,27 @@ import (
 
 type CalObject = davclient.CalendarObject
 
+const (
+	TEMPLATE_DEFAULT = "daily"
+)
+
 func main() {
-	tplName := flag.String("tpl", "daily", "Template to use")
+	flagConfig := flag.Bool("config", false, "Print example config file")
+	flagTemplate := flag.String("tpl", TEMPLATE_DEFAULT, "Template to use")
 	flag.Parse()
 
+	switch {
+	case *flagConfig:
+		PrintSettings()
+		return
+	default:
+		PrintDaily(*flagTemplate)
+		return
+	}
+}
+
+// Generate note from tasks.
+func PrintDaily(tplName string) {
 	logger := GetDefaultLogger()
 	slog.SetDefault(logger)
 
@@ -98,9 +115,9 @@ func main() {
 		},
 	}
 
-	src, ok := settings.Templates[*tplName]
+	src, ok := settings.Templates[tplName]
 	if !ok {
-		log.Fatalf("Template not found: %v", *tplName)
+		log.Fatalf("Template not found: %v", tplName)
 	}
 
 	tpl, err := template.New("note").Funcs(funcMap).Parse(src)
@@ -134,4 +151,38 @@ func GetCtime(e CalObject) string {
 		return v[0].Value
 	}
 	return ""
+}
+
+// Print example settings.
+// Store under `~/.config/daily/settings.yaml`.
+func PrintSettings() {
+	settings := Settings{
+		CalDAV: CalDAVConfig{
+			URL:      "https://caldav.fastmail.com/dav/calendars",
+			Username: "user@example.com",
+		},
+		ToDos: []CalendarConfig{
+			{
+				Name:  "DEFAULT_TASK_CALENDAR_NAME",
+				Label: "Tasks",
+			},
+		},
+		Templates: map[string]string{
+			TEMPLATE_DEFAULT: `
+
+* * *
+{{ range . }}
+## {{ . | LabelOrName }}
+{{ .Desc }}
+{{- range TasksByCal .Name | OnlyTodo | ByMtimeDesc | Top 5 }}
+- [ ] {{ Summary . -}}
+{{ end }}
+{{- range TasksByCal .Name | OnlyCompleted | ByMtimeDesc | Top 2 }}
+- [x] {{ Summary . }} ({{ Completed . }})
+{{ end }}
+{{ end -}}
+`,
+		},
+	}
+	settings.WriteSettings(os.Stdout.Name())
 }

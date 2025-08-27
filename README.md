@@ -19,10 +19,10 @@ go install github.com/mg6/daily@latest
 
 ## Configuration
 
-Copy the example settings file:
+Create settings file:
 
 ```sh
-cp settings.example.yaml ~/.config/daily/settings.yaml
+daily -config | tee ~/.config/daily/settings.yaml
 ```
 
 Edit `settings.yaml` as required:
